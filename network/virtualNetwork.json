@@ -1,0 +1,90 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vnetName": {
+      "type": "string",
+      "metadata": {
+        "description": "Virtual Network Name."
+      }
+    },
+    "addressPrefix1": {
+      "type": "string",
+      "metadata": {
+        "description": "Virtual Network addressPrefix1."
+      }
+    },
+    "addressPrefix2": {
+      "type": "string",
+      "metadata": {
+        "description": "Virtual Network addressPrefix2."
+      }
+    },
+    "subnetName1": {
+      "type": "string",
+      "metadata": {
+        "description": "Subnet Name1."
+      }
+    },
+    "subnetName2": {
+      "type": "string",
+      "metadata": {
+        "description": "Subnet Name2."
+      }
+    },
+    "subnetAddressPrefix1": {
+      "type": "string",
+      "metadata": {
+        "description": "Subnet Address Prefix1."
+      }
+    },
+    "subnetAddressPrefix2": {
+      "type": "string",
+      "metadata": {
+        "description": "Subnet Address Prefix2."
+      }
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Virutal Network Location."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2015-06-15",
+      "name": "[parameters('vnetName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "addressSpace": {
+	  "addressPrefixes": [
+	    "[parameters('addressPrefix1')]",
+	    "[parameters('addressPrefix2')]"
+	  ]
+	},
+	"subnets": [
+	  {
+	    "name": "[parameters('subnetName1')]",
+	    "properties": {
+	      "addressPrefix": "[parameters('subnetAddressPrefix1')]"
+	    }
+	  },
+	  {
+            "name": "[parameters('subnetName2')]",
+            "properties": {
+              "addressPrefix": "[parameters('subnetAddressPrefix2')]"
+            }
+          }
+	]
+      }
+    }
+  ],
+  "outputs": {
+    "vnetID": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnetName'))]"
+    }
+  }
+}

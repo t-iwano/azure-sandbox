@@ -1,0 +1,140 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vmName": {
+      "type": "string",
+      "metadata": {
+        "description": "Virtual Machine Name."
+      }
+    },
+    "vmSize": {
+      "type": "string",
+      "metadata": {
+        "description": "Virtual Machine Size."
+      }
+    },
+    "computerName": {
+      "type": "string",
+      "metadata": {
+        "description": "Computer Name."
+      }
+    },
+    "adminUsername": {
+      "type": "string",
+      "metadata": {
+        "description": "Admin User Name."
+      }
+    },
+    "adminPassword": {
+      "type": "string",
+      "metadata": {
+        "description": "Admin User Password."
+      }
+    },
+    "publisher": {
+      "type": "string",
+      "metadata": {
+        "description": "Publisher."
+      }
+    },
+    "offer": {
+      "type": "string",
+      "metadata": {
+        "description": "offer."
+      }
+    },
+    "sku": {
+      "type": "string",
+      "metadata": {
+        "description": "sku."
+      }
+    },
+    "version": {
+      "type": "string",
+      "metadata": {
+        "description": "Version."
+      }
+    },
+    "osDiskName": {
+      "type": "string",
+      "metadata": {
+        "description": "OS Disk Name."
+      }
+    },
+    "storageAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "Storage Account Name."
+      }
+    },
+    "primaryNetworkInterfaceID": {
+      "type": "string",
+      "metadata": {
+        "description": "Primary Network Interface ID."
+      }
+    },
+    "networkInterfaceID": {
+      "type": "string",
+      "metadata": {
+        "description": "Network Interface ID."
+      }
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Virtual Machine Location."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2015-06-15",
+      "name": "[parameters('vmName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[parameters('vmSize')]"
+        },
+        "osProfile": {
+          "computerName": "[parameters('computerName')]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[parameters('publisher')]",
+            "offer": "[parameters('offer')]",
+            "sku": "[parameters('sku')]",
+            "version": "[parameters('version')]"
+          },
+          "osDisk": {
+            "name": "[parameters('osDiskName')]",
+            "vhd": {
+              "uri": "[concat('http://', parameters('storageAccountName'), '.blob.core.windows.net/vhds/', parameters('osDiskName'), '.vhd')]"
+            },
+            "caching": "ReadWrite",
+            "createOption": "FromImage"
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[parameters('primaryNetworkInterfaceID')]",
+              "properties": {
+                "primary": true
+              }
+            },
+            {
+              "id": "[parameters('networkInterfaceID')]",
+              "properties": {
+                "primary": false
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

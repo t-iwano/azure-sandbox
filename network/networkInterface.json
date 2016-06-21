@@ -1,0 +1,66 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "networkInterfaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Network Interface Name."
+      }
+    },
+    "vnetID": {
+      "type": "string",
+      "metadata": {
+        "description": "Virtual Network ID."
+      }
+    },
+    "subnetName": {
+      "type": "string",
+      "metadata": {
+        "description": "Subnet Name."
+      }
+    },
+    "privateIPType": {
+      "type": "string",
+      "metadata": {
+        "description": "Private IP Type."
+      }
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Network Interface Location."
+      }
+    }
+  },
+  "variables": {
+    "subnetRef": "[concat(parameters('vnetID'), '/subnets/', parameters('subnetName'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2015-06-15",
+      "name": "[parameters('networkInterfaceName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "[parameters('privateIPType')]",
+              "subnet": {
+                "id": "[variables('subnetRef')]"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "outputs": {
+    "networkInterfaceID": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaceName'))]"
+    }
+  }
+}
